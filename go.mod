@@ -1,8 +1,11 @@
-module github.com/faagerholm/authentication-service
+module github.com/faagerholm/auth-service
 
-go 1.15
+go 1.16
 
 require (
-	github.com/fauna/faunadb-go/v4 v4.0.0
-	github.com/gorilla/mux v1.8.0
+	github.com/gofiber/fiber/v2 v2.17.0
+	github.com/golang-jwt/jwt v3.2.1+incompatible
+	golang.org/x/crypto v0.0.0-20210813211128-0a44fdfbc16e
+	gorm.io/driver/postgres v1.1.0
+	gorm.io/gorm v1.21.13
 )

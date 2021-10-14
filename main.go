@@ -1,47 +1,21 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-	"time"
-
-	"github.com/gorilla/mux"
+	"github.com/faagerholm/auth-service/database"
+	"github.com/faagerholm/auth-service/routes"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/ping", PingHandler)
-	r.HandleFunc("/login", LoginHandler)
-	r.HandleFunc("/logout", LogoutHandler)
-	r.HandleFunc("/check-token", CheckTokenHandler)
+	database.Connect()
 
-	srv := &http.Server{
-		Handler:      r,
-		Addr:         "127.0.0.1:6000",
-		WriteTimeout: 10 * time.Second,
-		ReadTimeout:  10 * time.Second,
-	}
-	log.Println("Listening on incoming requests")
-	log.Fatal(srv.ListenAndServe())
-}
+	app := fiber.New()
 
-func PingHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "Pong")
-}
+	app.Use(cors.New(cors.Config{
+		AllowCredentials: true,
+	}))
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "User Logged in")
-}
-
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "Logged out successfully")
-}
-
-func CheckTokenHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusForbidden)
-	fmt.Fprint(w, "User not authenticated")
+	routes.Setup(app)
+	app.Listen(":8000")
 }
